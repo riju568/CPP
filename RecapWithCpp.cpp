@@ -1,4 +1,4 @@
-#include <iostream> // for Input output
+#include <iostream> // for Input output cin>> and <<cout
 #include <algorithm> // Required for std::max
 #include <cmath> // Required for the sqrt() function
 #include <string> // Required for using the std::string class
