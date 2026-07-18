@@ -5,8 +5,13 @@
 #include <vector>    // Required for dynamic arrays (vectors)
 #include <memory> // Required for smart pointers (std::unique_ptr)
 #include <cstring> //C-style strings and raw memory blocks replacement of C-style strings and raw memory blocks
+#include <iomanip> // (input/output manipulator) header in C++
+#include <fstream> // header in C++ is essential for file input and output operations
 
 using namespace std;
+
+
+
 // 1.WAP TO FIND THE GREATEST OF 3 NUMBERS.
 int GreatestOf3Numbers(void) {
     int firstNumber, secondNumber, thirdNumber;
@@ -571,6 +576,285 @@ int StringToCompare2Strings() {
 
     return 0;
 }
+// 19.CREATE A CLASS ITEM, HAVING TWO DATA MEMBERS X & Y, OVERLOAD '-'(UNARY OPERATOR) TO CHANGE THE SIGN OF X AND Y.
+
+class Item {
+private:
+    int x;
+    int y;
+public:
+    Item(int initialX, int initialY) : x(initialX), y(initialY) {}
+
+    void operator-() {
+        x = -x;
+        y = -y;
+    }
+
+    void display() const {
+        std::cout << "X = " << x << ", Y = " << y << "\n";
+    }
+};
+int ChangeTheSign() {
+    Item myItem(15, -30);
+    std::cout << "Original values:\n";
+    myItem.display();
+    -myItem;
+    std::cout << "\nAfter applying unary '-' operator:\n";
+    myItem.display();
+    return 0;
+}
+// 20. CREATE A CLASS EMPLOYEE. DERIVE 3 CLASSES FROM THIS CLASS NAMELY, PROGRAMMER, ANALYST & PROJECT LEADER. TAKE ATTRIBUTES AND OPERATIONS ON YOUR OWN. WAP TO IMPLEMENT THIS WITH ARRAY OF POINTERS.
+
+
+
+class Employee {
+protected:
+    int empID;
+    std::string name;
+    double basicSalary;
+
+public:
+    Employee(int id, const std::string& empName, double salary)
+        : empID(id), name(empName), basicSalary(salary) {}
+
+    virtual ~Employee() {}
+
+    virtual void displayDetails() const = 0;
+    virtual double calculateTotalSalary() const = 0;
+};
+
+class Programmer : public Employee {
+private:
+    std::string primaryLanguage;
+    double codingAllowance;
+
+public:
+    Programmer(int id, const std::string& empName, double salary, 
+               const std::string& lang, double allowance)
+        : Employee(id, empName, salary), primaryLanguage(lang), codingAllowance(allowance) {}
+
+    double calculateTotalSalary() const override {
+        return basicSalary + codingAllowance;
+    }
+
+    void displayDetails() const override {
+        std::cout << "[Programmer] ID: " << empID << " | Name: " << name 
+                  << " | Lang: " << primaryLanguage 
+                  << " | Total Salary: $" << std::fixed << std::setprecision(2) 
+                  << calculateTotalSalary() << std::endl;
+    }
+};
+
+class Analyst : public Employee {
+private:
+    std::string specialization;
+    double dataBonus;
+
+public:
+    Analyst(int id, const std::string& empName, double salary, 
+            const std::string& spec, double bonus)
+        : Employee(id, empName, salary), specialization(spec), dataBonus(bonus) {}
+
+    double calculateTotalSalary() const override {
+        return basicSalary + dataBonus;
+    }
+
+    void displayDetails() const override {
+        std::cout << "[Analyst]    ID: " << empID << " | Name: " << name 
+                  << " | Spec: " << specialization 
+                  << " | Total Salary: $" << std::fixed << std::setprecision(2) 
+                  << calculateTotalSalary() << std::endl;
+    }
+};
+
+class ProjectLeader : public Employee {
+private:
+    int teamSize;
+    double leadershipStipend;
+
+public:
+    ProjectLeader(int id, const std::string& empName, double salary, 
+                  int size, double stipend)
+        : Employee(id, empName, salary), teamSize(size), leadershipStipend(stipend) {}
+
+    double calculateTotalSalary() const override {
+        return basicSalary + leadershipStipend;
+    }
+
+    void displayDetails() const override {
+        std::cout << "[Leader]     ID: " << empID << " | Name: " << name 
+                  << " | Team: " << teamSize << " members"
+                  << " | Total Salary: $" << std::fixed << std::setprecision(2) 
+                  << calculateTotalSalary() << std::endl;
+    }
+};
+
+int employeeDataDisplay() {
+    const int NUM_EMPLOYEES = 3;
+
+    Employee* team[NUM_EMPLOYEES];
+
+    team[0] = new Programmer(101, "Alice Smith", 60000, "C++", 5000);
+    team[1] = new Analyst(102, "Bob Jones", 65000, "System Architecture", 6000);
+    team[2] = new ProjectLeader(103, "Carol Danvers", 80000, 8, 12000);
+
+    std::cout << "================= EMPLOYEE DIRECTORY =================\n";
+    
+    for (int i = 0; i < NUM_EMPLOYEES; ++i) {
+        team[i]->displayDetails();
+    }
+    std::cout << "======================================================\n";
+
+    for (int i = 0; i < NUM_EMPLOYEES; ++i) {
+        delete team[i]; 
+        team[i] = nullptr;
+    }
+
+    return 0;
+}
+// 21.CREATE TWO CLASSES NAMELY EMPLOYEE AND QUALIFICATION. USING MULTIPLE INHERITANCE DERIVE TWO CLASSES SCIENTIST AND MANAGER. TAKE SUITABLE ATTRIBUTES & OPERATIONS. WAP TO IMPLEMENT THIS CLASS HIERARCHY same as above
+class Employee2 {
+protected:
+    int empID;
+    std::string name;
+    double basicSalary;
+public:
+    Employee2(int id, const std::string& empName, double salary)
+        : empID(id), name(empName), basicSalary(salary) {}
+    virtual ~Employee2() {}
+    virtual void displayDetails() const = 0;
+};
+class Qualification {
+protected:
+    std::string highestDegree;
+    std::string institute;
+    int passingYear;
+
+public:
+    Qualification(const std::string& degree, const std::string& inst, int year)
+        : highestDegree(degree), institute(inst), passingYear(year) {}
+
+    virtual ~Qualification() {}
+
+    void displayQualification() const {
+        std::cout << "  -> Academic: " << highestDegree << " from " 
+                  << institute << " (" << passingYear << ")\n";
+    }
+};
+class Scientist : public Employee2, public Qualification {
+private:
+    std::string researchDomain;
+    int publicationsCount;
+
+public:
+    Scientist(int id, const std::string& empName, double salary,
+              const std::string& degree, const std::string& inst, int year,
+              const std::string& domain, int publications)
+        : Employee2(id, empName, salary),          // Initialize Base 1
+          Qualification(degree, inst, year),       // Initialize Base 2
+          researchDomain(domain), publicationsCount(publications) {}
+
+    void displayDetails() const override {
+        std::cout << "[Scientist] ID: " << empID << " | Name: " << name 
+                  << " | Salary: $" << std::fixed << std::setprecision(2) << basicSalary << "\n";
+        displayQualification(); // Calling method from Base 2
+        std::cout << "  -> Research: " << researchDomain 
+                  << " | Publications: " << publicationsCount << "\n\n";
+    }
+};
+class Manager : public Employee2, public Qualification {
+private:
+    std::string department;
+    int teamSize;
+
+public:
+    Manager(int id, const std::string& empName, double salary,
+            const std::string& degree, const std::string& inst, int year,
+            const std::string& dept, int team)
+        : Employee2(id, empName, salary),          // Initialize Base 1
+          Qualification(degree, inst, year),       // Initialize Base 2
+          department(dept), teamSize(team) {}
+
+    void displayDetails() const override {
+        std::cout << "[Manager]   ID: " << empID << " | Name: " << name 
+                  << " | Salary: $" << std::fixed << std::setprecision(2) << basicSalary << "\n";
+        displayQualification(); // Calling method from Base 2
+        std::cout << "  -> Dept: " << department 
+                  << " | Team Size: " << teamSize << " members\n\n";
+    }
+};
+int employeeHIERARCHY() {
+    const int SIZE = 2;
+    Employee2* staff[SIZE];
+    staff[0] = new Scientist(201, "Dr. Aris Thorne", 95000, 
+                             "Ph.D. in Astrophysics", "MIT", 2018, 
+                             "Quantum Cosmology", 14);
+
+    staff[1] = new Manager(202, "Elena Rostova", 88000, 
+                           "MBA", "Harvard Business School", 2015, 
+                           "R&D Operations", 25);
+
+    std::cout << "================ MULTIPLE INHERITANCE DIRECTORY ================\n\n";
+    for (int i = 0; i < SIZE; ++i) {
+        staff[i]->displayDetails();
+    }
+    std::cout << "================================================================\n";
+    for (int i = 0; i < SIZE; ++i) {
+        delete staff[i]; 
+        staff[i] = nullptr;
+    }
+
+    return 0;
+}
+// 22.WAP TO READ DATA FROM FROM KEYWORD & WRITE IT TO THE FILE. AFTER WRITING IS COMPLETED, THE FILE IS CLOSED. THE PROGRAM AGAIN OPENS THE SAME FILE, READS.same as above
+
+int dataToFileAndRead() {
+
+    const std::string filename = "user_data.txt";
+    std::string inputData;
+
+    std::cout << "\n--- STEP 1: WRITE TO FILE ---\n";
+    std::cout << "Enter a sentence or paragraph to save to the file:\n> ";
+    
+    std::getline(std::cin, inputData);
+
+    std::ofstream outFile(filename);
+
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Could not open file for writing!\n";
+        return 1;
+    }
+
+    outFile << inputData << std::endl;
+
+    outFile.close();
+    std::cout << "Data successfully saved to '" << filename << "' and file closed.\n\n";
+
+    std::cout << "--- STEP 2: READ FROM FILE ---\n";
+    
+    std::ifstream inFile(filename);
+
+    if (!inFile.is_open()) {
+        std::cerr << "Error: Could not open file for reading!\n";
+        return 1;
+    }
+
+    std::cout << "Contents read from '" << filename << "':\n";
+    std::cout << "----------------------------------------\n";
+
+    std::string line;
+    while (std::getline(inFile, line)) {
+        std::cout << line << std::endl;
+    }
+    std::cout << "----------------------------------------\n";
+
+    inFile.close();
+    std::cout << "File read complete and file closed.\n";
+
+    return 0;
+
+
+}
 int main(void){
 
     // printFibonacciSeriesOfNTerm();
@@ -587,6 +871,10 @@ int main(void){
     // Add2ComplexNumber() ;
     // StringToCompare2Strings();
     //  FibonacciOutput();
+    // ChangeTheSign();
+    // employeeDataDisplay();
+    // employeeHIERARCHY();
+    // dataToFileAndRead();
     
     return 0;
 }
