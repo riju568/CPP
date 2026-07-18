@@ -4,6 +4,7 @@
 #include <string> // Required for using the std::string class
 #include <vector>    // Required for dynamic arrays (vectors)
 #include <memory> // Required for smart pointers (std::unique_ptr)
+#include <cstring> //C-style strings and raw memory blocks replacement of C-style strings and raw memory blocks
 
 using namespace std;
 // 1.WAP TO FIND THE GREATEST OF 3 NUMBERS.
@@ -395,6 +396,179 @@ int StudentInfoFunctionToCall() {
     cout << "--- Student Information Entry System ---" << endl;
     studentRecord.readStudentData();
     studentRecord.displayStudentData();
+    return 0;
+}
+// 15.WAP TO GENERATE A SERIES OF FIBONACCI NUMBERS USING COPY CONSTRUCTOR WHERE IT IS DEFINED THE CLASS USING SCOPE RESOLUTION OPERATOR.
+class FibonacciGenerator {
+private:
+    int limit;
+    std::unique_ptr<std::vector<int>> series;
+
+public:
+    FibonacciGenerator(int n);
+    FibonacciGenerator(const FibonacciGenerator& other);
+    void generate();
+    void display() const;
+    ~FibonacciGenerator() = default;
+};
+FibonacciGenerator::FibonacciGenerator(int n) : limit(n) {
+    series = std::make_unique<std::vector<int>>();
+}
+FibonacciGenerator::FibonacciGenerator(const FibonacciGenerator& other) {
+    this->limit = other.limit;
+    if (other.series) {
+        this->series = std::make_unique<std::vector<int>>(*other.series);
+    } else {
+        this->series = std::make_unique<std::vector<int>>();
+    }
+}
+
+void FibonacciGenerator::generate() {
+    if (limit <= 0) return;
+    series->clear();
+    if (limit >= 1) series->push_back(0);
+    if (limit >= 2) series->push_back(1);
+    for (int i = 2; i < limit; ++i) {
+        int nextTerm = series->at(i - 1) + series->at(i - 2);
+        series->push_back(nextTerm);
+    }
+}
+void FibonacciGenerator::display() const {
+    if (!series || series->empty()) {
+        std::cout << "Series is empty." << std::endl;
+        return;
+    }
+    for (int num : *series) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+}
+
+int FibonacciOutput() {
+    int terms;
+    std::cout << "Enter the number of terms for the Fibonacci series: ";
+    if (!(std::cin >> terms) || terms < 0) {
+        std::cerr << "Invalid input!" << std::endl;
+        return 1;
+    }
+    FibonacciGenerator original(terms);
+    original.generate();
+    std::cout << "Original Series: ";
+    original.display();
+    FibonacciGenerator clone = original; 
+    std::cout << "Cloned Series (via Copy Constructor): ";
+    clone.display();
+
+    return 0;
+}
+// 16.WAP TO ADD TWO COMPLEX NUMBERS WITH A FRIEND FUNCTION
+class Complex {
+private:
+    std::unique_ptr<double> real;
+    std::unique_ptr<double> imag;
+
+public:
+    Complex(double r = 0.0, double i = 0.0);
+    Complex(const Complex& other);
+    void display() const;
+    friend Complex add(const Complex& c1, const Complex& c2);
+    ~Complex() = default;
+};
+
+Complex::Complex(double r, double i) {
+    real = std::make_unique<double>(r);
+    imag = std::make_unique<double>(i);
+}
+
+Complex::Complex(const Complex& other) {
+    this->real = std::make_unique<double>(*other.real);
+    this->imag = std::make_unique<double>(*other.imag);
+}
+
+void Complex::display() const {
+    std::cout << *real << " + " << *imag << "i" << std::endl;
+}
+Complex add(const Complex& c1, const Complex& c2) {
+    double totalReal = *(c1.real) + *(c2.real);
+    double totalImag = *(c1.imag) + *(c2.imag);
+    return Complex(totalReal, totalImag);
+}
+
+int Add2ComplexNumber() {
+    double r1, i1, r2, i2;
+    std::cout << "Enter Real and Imaginary part for Number 1: ";
+    if (!(std::cin >> r1 >> i1)) return 1;
+    std::cout << "Enter Real and Imaginary part for Number 2: ";
+    if (!(std::cin >> r2 >> i2)) return 1;
+    Complex num1(r1, i1);
+    Complex num2(r2, i2);
+    std::cout << "\nNumber 1: ";
+    num1.display();
+    std::cout << "Number 2: ";
+    num2.display();
+    Complex result = add(num1, num2);
+    std::cout << "Sum     : ";
+    result.display();
+
+    return 0;
+}
+// 17. WRITE A CLASS STRING TO COMPARE TWO STRINGS, OVERLOAD(==) OPERATOR.
+class String {
+private:
+    std::unique_ptr<char[]> data;
+    size_t length;
+public:
+    String(const char* str = "");
+    String(const String& other);
+    bool operator==(const String& other) const;
+    void display() const;
+    ~String() = default;
+};
+String::String(const char* str) {
+    if (str == nullptr) {
+        length = 0;
+        data = std::make_unique<char[]>(1);
+        data[0] = '\0';
+    } else {
+        length = std::strlen(str);
+        data = std::make_unique<char[]>(length + 1);
+        std::strcpy(data.get(), str);
+    }
+}
+String::String(const String& other) {
+    this->length = other.length;
+    this->data = std::make_unique<char[]>(this->length + 1);
+    std::strcpy(this->data.get(), other.data.get());
+}
+bool String::operator==(const String& other) const {
+    if (this->length != other.length) {
+        return false;
+    }
+    return std::strcmp(this->data.get(), other.data.get()) == 0;
+}
+void String::display() const {
+    if (data) {
+        std::cout << data.get();
+    }
+}
+
+int StringToCompare2Strings() {
+    char buffer1[256];
+    char buffer2[256];
+    std::cout << "Enter the first string: ";
+    std::cin.getline(buffer1, 256);
+    std::cout << "Enter the second string: ";
+    std::cin.getline(buffer2, 256);
+    String s1(buffer1);
+    String s2(buffer2);
+    std::cout << "\nString 1: \""; s1.display(); std::cout << "\"\n";
+    std::cout << "String 2: \""; s2.display(); std::cout << "\"\n";
+    if (s1 == s2) {
+        std::cout << "\nResult: The strings are EQUAL." << std::endl;
+    } else {
+        std::cout << "\nResult: The strings are NOT EQUAL." << std::endl;
+    }
+
     return 0;
 }
 int main(void){
