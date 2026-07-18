@@ -184,6 +184,219 @@ int calculateSumOfElementsFunctionToCall() {
     cout << "\nThe sum of all elements in the array is: " << finalSumResult << endl;
     return 0;
 }
+// 9.WAP TO SWAP VARIABLE USING CALL BY VALUE 
+void swapUsingCallByValue(int firstValue, int secondValue) {
+    int temporaryHolder = firstValue;
+    firstValue = secondValue;
+    secondValue = temporaryHolder;
+    cout << "\n[Inside Function] Swapping completed!" << endl;
+    cout << "First Value = " << firstValue << ", Second Value = " << secondValue << endl;
+}
+int swapUsingCallByValueMainFunction() {
+    int firstNumber, secondNumber;
+    cout << "Enter the first number: ";
+    cin >> firstNumber;
+    cout << "Enter the second number: ";
+    cin >> secondNumber;
+    cout << "\n[Inside Main] Before calling the swap function:" << endl;
+    cout << "First Number = " << firstNumber << ", Second Number = " << secondNumber << endl;
+    swapUsingCallByValue(firstNumber, secondNumber);
+    cout << "\n[Inside Main] After returning from the swap function:" << endl;
+    cout << "First Number = " << firstNumber << ", Second Number = " << secondNumber << endl;
+
+    return 0;
+}
+
+// 10.WAP TO SWAP VARIABLES USING CALL BY REFERENCE
+void swapUsingCallByReference(int &firstReference, int &secondReference) {
+    int temporaryHolder = firstReference;
+    firstReference = secondReference;
+    secondReference = temporaryHolder;
+    cout << "\n[Inside Function] Swapping completed!" << endl;
+    cout << "First Reference = " << firstReference << ", Second Reference = " << secondReference << endl;
+}
+int swapUsingCallByReferenceFunctionToCall() {
+    int firstNumber, secondNumber;
+    cout << "Enter the first number: ";
+    cin >> firstNumber;
+    cout << "Enter the second number: ";
+    cin >> secondNumber;
+    cout << "\n[Inside Main] Before calling the swap function:" << endl;
+    cout << "First Number = " << firstNumber << ", Second Number = " << secondNumber << endl;
+    swapUsingCallByReference(firstNumber, secondNumber);
+    cout << "\n[Inside Main] After returning from the swap function:" << endl;
+    cout << "First Number = " << firstNumber << ", Second Number = " << secondNumber << endl;
+
+    return 0;
+}
+// 11.WAP TO FIND THE SUM OF THREE NUMBERS USING POINTER TO FUNCTION METHOD
+int calculateSumOfThreeNumbers(int firstNumber, int secondNumber, int thirdNumber) {
+    return firstNumber + secondNumber + thirdNumber;
+}
+
+int calculateSumOfThreeNumbersOuputFunction() {
+    int firstNumber, secondNumber, thirdNumber;
+    cout << "Enter the first number: ";
+    cin >> firstNumber;
+    cout << "Enter the second number: ";
+    cin >> secondNumber;
+    cout << "Enter the third number: ";
+    cin >> thirdNumber;
+    int (*sumOperationPointer)(int, int, int) = calculateSumOfThreeNumbers;
+    int totalSumResult = sumOperationPointer(firstNumber, secondNumber, thirdNumber);
+    cout << "\nThe sum of the three numbers calculated via function pointer is: " << totalSumResult << endl;
+    return 0;
+}
+
+// 12.WAP TO DISPLAY CONTENT OF AN ARRAY USING POINTER ARITHMETIC.
+int displayArray(void) {
+    const int MAXIMUM_CAPACITY = 100;
+    int numbersArray[MAXIMUM_CAPACITY];
+    int totalElements;
+
+    cout << "Enter the number of elements you want to store (Maximum " << MAXIMUM_CAPACITY << "): ";
+    cin >> totalElements;
+
+    if (totalElements <= 0 || totalElements > MAXIMUM_CAPACITY) {
+        cout << "Error: Invalid size. Must be between 1 and " << MAXIMUM_CAPACITY << "." << endl;
+        return 1;
+    }
+
+    cout << "Enter " << totalElements << " numbers:" << endl;
+    for (int elementIndex = 0; elementIndex < totalElements; ++elementIndex) {
+        cout << "Element " << (elementIndex + 1) << ": ";
+        cin >> numbersArray[elementIndex];
+    }
+
+    cout << "\nDisplaying array elements using pointer arithmetic:" << endl;
+
+    int* arrayElementPointer = numbersArray;
+
+    for (int trackingCounter = 0; trackingCounter < totalElements; ++trackingCounter) {
+        cout << "Address: " << arrayElementPointer 
+             << " -> Value: " << *arrayElementPointer << endl;
+
+        arrayElementPointer++;
+    }
+
+    return 0;
+}
+// 13.WAP TO FIND AREA OF CIRCLE, RECTANGLE, SQUARE & TRIANGLE USING FUNCTION OVERLOADING
+const double PI_VALUE = 3.141592653589793;
+double calculateArea(double radius) {
+    return PI_VALUE * radius * radius;
+}
+float calculateArea(float side) {
+    return side * side;
+}
+double calculateArea(double length, double width) {
+    return length * width;
+}
+float calculateArea(float base, float height) {
+    return 0.5f * base * height;
+}
+int TheMainOutputFunction() {
+    int userChoice;
+    cout << "Geometric Area Calculator" << endl;
+    cout << "1. Circle\n2. Rectangle\n3. Square\n4. Triangle" << endl;
+    cout << "Select a shape (1-4): ";
+    cin >> userChoice;
+    cout << "\n";
+    switch (userChoice) {
+        case 1: {
+            double circleRadius;
+            cout << "Enter the radius of the circle: ";
+            cin >> circleRadius;
+            cout << "Area of the Circle: " << calculateArea(circleRadius) << endl;
+            break;
+        }
+        case 2: {
+            double rectangleLength, rectangleWidth;
+            cout << "Enter the length of the rectangle: ";
+            cin >> rectangleLength;
+            cout << "Enter the width of the rectangle: ";
+            cin >> rectangleWidth;
+            cout << "Area of the Rectangle: " << calculateArea(rectangleLength, rectangleWidth) << endl;
+            break;
+        }
+        case 3: {
+            float squareSide;
+            cout << "Enter the side length of the square: ";
+            cin >> squareSide;
+            cout << "Area of the Square: " << calculateArea(squareSide) << endl;
+            break;
+        }
+        case 4: {
+            float triangleBase, triangleHeight;
+            cout << "Enter the base of the triangle: ";
+            cin >> triangleBase;
+            cout << "Enter the perpendicular height of the triangle: ";
+            cin >> triangleHeight;
+            cout << "Area of the Triangle: " << calculateArea(triangleBase, triangleHeight) << endl;
+            break;
+        }
+        default:
+            cout << "Error: Invalid menu selection." << endl;
+            return 1;
+    }
+    return 0;
+}
+// 14. WAP TO DEFINE NESTED CLASS 'STUDENT_INFO' WHICH CONTAINS DATA MEMBERS SUCH AS NAME, ROLL NUMBER AND SEX AND ALSO CONSISTS OF ONE MORE CLASS 'DATE' WHOSE DATA MEMBERS ARE DAY, MONTH AND YEAR. THIS DATA IS TO BE READ FROM THE KEYBOARD & DISPLAYED ON THE SCREEN.
+class StudentInfo {
+public:
+    class Date {
+    private:
+        int day;
+        int month;
+        int year;
+    public:
+        void readDate() {
+            cout << "  Enter Day (DD): ";
+            cin >> day;
+            cout << "  Enter Month (MM): ";
+            cin >> month;
+            cout << "  Enter Year (YYYY): ";
+            cin >> year;
+        }
+        void displayDate() const {
+            cout << (day < 10 ? "0" : "") << day << "/"
+                 << (month < 10 ? "0" : "") << month << "/"
+                 << year;
+        }
+    };
+private:
+    string name;
+    int rollNumber;
+    char sex;
+    Date genericDate;
+public:
+    void readStudentData() {
+        cout << "Enter Student Name: ";
+        getline(cin, name);
+        cout << "Enter Roll Number: ";
+        cin >> rollNumber;
+        cout << "Enter Sex (M/F/O): ";
+        cin >> sex;
+        cout << "\n[Entering Date Details]" << endl;
+        genericDate.readDate();
+    }
+    void displayStudentData() const {
+        cout << "\n================ Student Record ================" << endl;
+        cout << "Name:        " << name << endl;
+        cout << "Roll Number: " << rollNumber << endl;
+        cout << "Sex:         " << sex << endl;
+        cout << "Stored Date: ";
+        genericDate.displayDate();
+        cout << "\n================================================" << endl;
+    }
+};
+int StudentInfoFunctionToCall() {
+    StudentInfo studentRecord;
+    cout << "--- Student Information Entry System ---" << endl;
+    studentRecord.readStudentData();
+    studentRecord.displayStudentData();
+    return 0;
+}
 int main(void){
 
     // printFibonacciSeriesOfNTerm();
@@ -191,5 +404,12 @@ int main(void){
     // checkIfGivenNumberIsPrime();
     // countTotalCharactersInGivenString();
     // findLargestNumberInGivenArray();
+    // swapUsingCallByValueMainFunction();
+    // swapUsingCallByReferenceFunctionToCall;
+    // StudentInfoFunctionToCall();
+    // TheMainOutputFunction();
+    // displayArray();
+    // calculateSumOfThreeNumbersOuputFunction();
+    
     return 0;
 }
