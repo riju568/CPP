@@ -37,14 +37,11 @@ public:
     virtual double getPerimeter() const = 0;
 };
 
-// Derived Class: Triangle2D
 class Triangle2D : public GeometricObject {
 private:
     double side1{1.0};
     double side2{1.0};
     double side3{1.0};
-
-    // Helper method to validate Triangle Inequality Theorem
     static bool isValidTriangle(double s1, double s2, double s3) noexcept {
         return (s1 + s2 > s3) && (s1 + s3 > s2) && (s2 + s3 > s1);
     }
@@ -75,8 +72,6 @@ public:
     double getSide1() const noexcept { return side1; }
     double getSide2() const noexcept { return side2; }
     double getSide3() const noexcept { return side3; }
-
-    // Heron's formula for area calculation
     double getArea() const noexcept override {
         double s = getPerimeter() / 2.0;
         return std::sqrt(s * (s - side1) * (s - side2) * (s - side3));
@@ -90,8 +85,6 @@ public:
         return std::format("Triangle2D: side1 = {:.1f} side2 = {:.1f} side3 = {:.1f}", side1, side2, side3);
     }
 };
-
-// Helper function for safe Boolean parsing from input
 bool parseBooleanInput(const std::string& inputStr) {
     std::string lowerInput = inputStr;
     std::transform(lowerInput.begin(), lowerInput.end(), lowerInput.begin(),
@@ -116,7 +109,6 @@ int main() {
         if (!(std::cin >> side1 >> side2 >> side3)) {
             throw std::runtime_error("Invalid input stream reading side lengths.");
         }
-
         std::cout << "Enter color: ";
         std::string color;
         if (!(std::cin >> color)) {
@@ -128,10 +120,7 @@ int main() {
         if (!(std::cin >> fillInput)) {
             throw std::runtime_error("Invalid input stream reading filled status.");
         }
-
         bool filled = parseBooleanInput(fillInput);
-
-        // Dynamic allocation using Smart Pointer (RAII handles garbage collection/memory release)
         std::unique_ptr<GeometricObject> shape = 
             std::make_unique<Triangle2D>(side1, side2, side3, color, filled);
 

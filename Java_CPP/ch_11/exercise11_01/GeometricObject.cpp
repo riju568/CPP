@@ -46,16 +46,13 @@ private:
     double side2{1.0};
     double side3{1.0};
 
-    // Helper: Validates Triangle Inequality Theorem
     static bool isValidTriangle(double s1, double s2, double s3) noexcept {
         return (s1 + s2 > s3) && (s1 + s3 > s2) && (s2 + s3 > s1);
     }
 
 public:
-    // No-arg Constructor
-    Triangle2D() = default;
 
-    // Parameterized Constructors
+    Triangle2D() = default;
     Triangle2D(double side1, double side2, double side3)
         : GeometricObject(), side1(side1), side2(side2), side3(side3) {
         validateSides(side1, side2, side3);
@@ -133,21 +130,10 @@ int main() {
         if (!(std::cin >> fillInput)) {
             throw std::runtime_error("Invalid filled input.");
         }
-
         bool filled = parseBooleanInput(fillInput);
-
-
-        std::unique_ptr<Triangle2D> triangle = 
-            std::make_unique<Triangle2D>(side1, side2, side3, color, filled);
-
-        std::cout << "\nFor " << triangle->toString() << " the area is " 
-                  << std::format("{:.2f}", triangle->getArea()) << " square units, \n"
-                  << "The perimeter is " << triangle->getPerimeter() << '\n';
-
-        std::cout << "The current color is " << triangle->getColor() << " \n"
-                  << "And is the triangle filled is: " 
-                  << (triangle->isFilled() ? "true" : "false") << '\n';
-
+        std::unique_ptr<Triangle2D> triangle = std::make_unique<Triangle2D>(side1, side2, side3, color, filled);
+        std::cout << "\nFor " << triangle->toString() << " the area is "  << std::format("{:.2f}", triangle->getArea()) << " square units, \n" << "The perimeter is " << triangle->getPerimeter() << '\n';
+        std::cout << "The current color is " << triangle->getColor() << " \n"  << "And is the triangle filled is: " << (triangle->isFilled() ? "true" : "false") << '\n';
         std::cout << "\n[Base Class Information]\n" << triangle->GeometricObject::toString() << '\n';
 
         return EXIT_SUCCESS;
