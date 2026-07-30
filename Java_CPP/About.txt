@@ -1,0 +1,3 @@
+This is java to C++ interpretation from
+
+https://github.com/HarryDulaney/intro-to-java-programming.git thanks to the creator and book's auther.
