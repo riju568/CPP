@@ -24,10 +24,10 @@ int main()
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-        GLFWwindow* window = glfwCreateWindow(800, 600, "Exercise 15_23 - Auto Resize Stop Sign", nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow(800, 600, "Exercise 15_21 - Cross Platform ImGui", nullptr, nullptr);
         if (window == nullptr)
             return 1;
-
+        
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
 
@@ -40,8 +40,13 @@ int main()
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(glsl_version);
 
-        float originalWidth = 200.0f;
-        float originalHeight = 200.0f;
+        float p1_x = 240.0f, p1_y = 165.0f;
+        float p2_x = 340.0f, p2_y = 165.0f;
+        float p3_x = 260.0f, p3_y = 265.0f;
+
+        float cx = 300.0f;
+        float cy = 200.0f;
+        float mainRadius = 100.0f;
 
         while (!glfwWindowShouldClose(window))
         {
@@ -51,37 +56,28 @@ int main()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            ImGui::Begin("Auto Resize Stop Sign Window");
+            ImGui::Begin("Triangle Angle Calculator");
 
-            ImVec2 windowSize = ImGui::GetWindowSize();
-            float currentWidth = windowSize.x > 0 ? windowSize.x : originalWidth;
-            float currentHeight = windowSize.y > 0 ? windowSize.y : originalHeight;
+            ImGui::Text("Drag points or use sliders to change triangle vertices along/near the circle.");
+            ImGui::SliderFloat("Point 1 X", &p1_x, cx - mainRadius, cx + mainRadius);
+            ImGui::SliderFloat("Point 1 Y", &p1_y, cy - mainRadius, cy + mainRadius);
+            ImGui::SliderFloat("Point 2 X", &p2_x, cx - mainRadius, cx + mainRadius);
+            ImGui::SliderFloat("Point 2 Y", &p2_y, cy - mainRadius, cy + mainRadius);
+            ImGui::SliderFloat("Point 3 X", &p3_x, cx - mainRadius, cx + mainRadius);
+            ImGui::SliderFloat("Point 3 Y", &p3_y, cy - mainRadius, cy + mainRadius);
 
-            ImGui::Text("Window Size: %.0fx%.0f", currentWidth, currentHeight);
+            double a = std::sqrt(std::pow(p3_x - p2_x, 2) + std::pow(p3_y - p2_y, 2));
+            double b = std::sqrt(std::pow(p3_x - p1_x, 2) + std::pow(p3_y - p1_y, 2));
+            double c = std::sqrt(std::pow(p2_x - p1_x, 2) + std::pow(p2_y - p1_y, 2));
 
-            ImDrawList* draw_list = ImGui::GetWindowDrawList();
-            ImVec2 p = ImGui::GetCursorScreenPos();
-            
-            float canvasWidth = std::max(100.0f, currentWidth - 40.0f);
-            float canvasHeight = std::max(100.0f, currentHeight - 100.0f);
-            
-            ImVec2 center = ImVec2(p.x + canvasWidth * 0.5f, p.y + canvasHeight * 0.5f);
-            float radius = std::min(canvasWidth, canvasHeight) * 0.4f;
+            double angle0 = 0.0, angle1 = 0.0, angle2 = 0.0;
+            if (b * c != 0.0) angle0 = std::acos(std::clamp((a * a - b * b - c * c) / (-2 * b * c), -1.0, 1.0));
+            if (a * c != 0.0) angle1 = std::acos(std::clamp((b * b - a * a - c * c) / (-2 * a * c), -1.0, 1.0));
+            if (a * b != 0.0) angle2 = std::acos(std::clamp((c * c - b * b - a * a) / (-2 * a * b), -1.0, 1.0));
 
-            ImVector<ImVec2> points;
-            for (int i = 0; i < 8; i++)
-            {
-                float angle = 2.0f * i * 3.14159265358979323846f / 8.0f + (22.5f * 3.14159265358979323846f / 180.0f);
-                points.push_back(ImVec2(center.x + radius * std::cos(angle), center.y - radius * std::sin(angle)));
-            }
-
-            draw_list->AddConvexPolyFilled(points.Data, points.Size, IM_COL32(255, 0, 0, 255));
-
-            std::string stopText = "STOP";
-            ImVec2 textSize = ImGui::CalcTextSize(stopText.c_str());
-            
-            ImGui::SetCursorScreenPos(ImVec2(center.x - textSize.x * 0.5f, center.y - textSize.y * 0.5f));
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "%s", stopText.c_str());
+            ImGui::Text("Angle at Point 1: %.2f degrees", angle0 * 180.0 / 3.14159265358979323846);
+            ImGui::Text("Angle at Point 2: %.2f degrees", angle1 * 180.0 / 3.14159265358979323846);
+            ImGui::Text("Angle at Point 3: %.2f degrees", angle2 * 180.0 / 3.14159265358979323846);
 
             ImGui::End();
 
