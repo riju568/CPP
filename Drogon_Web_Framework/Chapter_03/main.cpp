@@ -75,7 +75,6 @@ public:
 
 }  // namespace api::v1
 
-// ---------------------------------------------------------------------------
 // 3. C++20 Coroutine Handler: Async HTTP call with co_await
 Task<HttpResponsePtr> fetchProfileCoro(HttpRequestPtr req, std::string userId) {
     auto client = HttpClient::newHttpClient("https://httpbin.org");
