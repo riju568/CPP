@@ -6,9 +6,7 @@
 
 using namespace drogon;
 
-// ---------------------------------------------------------------------------
 // 1. Filter (Middleware): Checks "Authorization: Bearer secret-token"
-// ---------------------------------------------------------------------------
 class AuthFilter : public HttpFilter<AuthFilter> {
 public:
     void doFilter(const HttpRequestPtr& req,
@@ -30,9 +28,7 @@ public:
     }
 };
 
-// ---------------------------------------------------------------------------
 // 2. Controller: Grouped routes under /api/v1/users
-// ---------------------------------------------------------------------------
 namespace api::v1 {
 
 class Users : public HttpController<Users> {
@@ -81,7 +77,6 @@ public:
 
 // ---------------------------------------------------------------------------
 // 3. C++20 Coroutine Handler: Async HTTP call with co_await
-// ---------------------------------------------------------------------------
 Task<HttpResponsePtr> fetchProfileCoro(HttpRequestPtr req, std::string userId) {
     auto client = HttpClient::newHttpClient("https://httpbin.org");
     auto upstreamReq = HttpRequest::newHttpRequest();
@@ -101,9 +96,7 @@ Task<HttpResponsePtr> fetchProfileCoro(HttpRequestPtr req, std::string userId) {
     co_return resp;
 }
 
-// ---------------------------------------------------------------------------
 // 4. Entry Point
-// ---------------------------------------------------------------------------
 int main() {
     // Register coroutine route
     app().registerHandler("/api/coro/profile/{user_id}", &fetchProfileCoro, {Get});
